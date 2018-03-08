@@ -1,24 +1,28 @@
 <template>
   <div id="app">
-    <img src="./assets/sondage.png" alt="logo" width="400" height="150">
-    <Poll/>
+    <create></create>
+    <answer/>
+    <result/>
   </div>
 </template>
 
 <script>
-import Poll from './components/Poll'
+import create from './components/create';
+import answer from './components/answer';
+import result from './components/result';
+
 
 export default {
   name: 'App',
   components: {
-    Poll
+    create,
+    answer,
+    result
   }
 }
 </script>
 
-<style lang="scss">
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
-
+<style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -1,71 +1,81 @@
 <template>
-  <div>
-    <div class="container-col">
-    <form class="container-col col-sm-10" v-on:submit.prevent="action1()">
-        <fieldset class="form-group col-sm-6">
-            <div class="form-group col-auto">
-                <label>Title</label>
-                <input type="text" name="title" class="form-control" placeholder="Title" v-model="poll.title">  
-            </div>
-            <div class="form-group col-auto" v-for="(option, index) in poll.options" :key="index">
-                
-                <input type="text" :name="`option${index+1}`" class="form-control plaintext" :placeholder="`Option${index+1}`" v-model="poll.options[index].text">
-                <button type="button" @click="remove(index)" v-if="poll.options.length > 2" class="btn btn-link">Remove</button>
-                
-            </div>
-            <div class="form-group col-auto">
-            <button type="button" @click="add()" class="btn btn-link">Add</button>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </fieldset>
-    </form>
-    </div>
-  </div>
+<form @submit.prevent="onSubmit()">
+  <div class="form-group">
 
+    <input type="text"
+    name="title"
+    placeholder="Title"
+    v-model="poll.title"
+    required>
+
+  </div>
+  <div
+  v-for="(option, index) in poll.options" 
+  :key="index"  class="form-group">
+
+    <input type="text" 
+    :name="`option${index + 1}`"
+    :placeholder="`Option ${index + 1}`"
+    v-model="poll.options[index].text"
+    required>
+
+    <button
+    type="button"
+    class="btn btn-link"
+    @click="remove(index)"
+    v-if="poll.options.length > 2">
+      Remove
+    </button>
+
+  </div>
+  <div class="form-group">
+
+    <button
+    type="button"
+    class="btn btn-link"
+    @click="add()">
+      Add
+    </button>
+
+  </div>
+  <input type="submit">
+</form>
 </template>
 
 <script>
+import Api from '../api'; // @/ ====> la racine 
 
 export default {
-    name:'create',
-    data: function () {
-        return {
-            poll : {
-                "title": '',
-                "options": [
-                    {"text": '', "checked": false},
-                    {"text": '', "checked": false}                    
-                ]
-            }
-        }
-    },
-    methods: {
-        action1() { 
-          this.$emit('action1', Object.assign({}, this.poll));
-        },
-        add() {
-            this.poll.options.push({"text":'', "checked": false});
-        },
-        remove(index) {
-            this.poll.options.splice(index, 1);
-        }
+  // on nomme notre component
+  name: 'create',
+  // la fonction data retourne les données INTERNES de notre component, data DOIT être une fonction
+  data(){
+    return {
+      poll: {
+        title: "",
+        options: [{text: ""},{text: ""}]
       }
+    }
+  },
+  // on déclare les méthodes du component
+  methods: {
+    // la méthode onSubmit() est appelée lorsqu'on submit le formulaire
+    onSubmit(){
+      Api.setPoll(this.poll);
+    },
+    // la méthode add() est appelée lorsqu'on clique sur le bouton "add"
+    add(){
+      // on ajoute une string vide dans le tableau options, ce qui ajoutera un input dans notre formulaire
+      this.poll.options.push({text: ""});
+    },
+    // la méthode remove() est appelée lorsqu'on clique sur le bouton "remove"    
+    remove(index){
+      // on retire du tableau l'élément correspodant à l'index
+      this.poll.options.splice(index, 1)
+    }
+  }
 }
 </script>
 
-<style>
-.container-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-fieldset {
-    border: 1px solid #b9b5b5;
-    border-radius: 5px;
-    padding: 10px 0;
-}
-
+<style scoped>
 </style>

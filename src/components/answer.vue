@@ -1,51 +1,55 @@
 <template>
-    <div class="container-col">
-    <form class="container-col col-sm-10" v-on:submit.prevent="action2()">
-        <fieldset class="form-group col-sm-6">
-            <h2> {{poll.title}} </h2> 
-            <div v-for="(option, index) in poll.options" :key="index">
-                
-                <label>{{option.text}}</label>
-                <input type="radio" name="poll" :value="option.id" v-model="picked">
-            </div>         
-            <button type="submit" class="btn btn-primary">Voter</button>
-        </fieldset>
-    </form>
+  <form @submit.prevent="onSubmit()">
+    <h2>{{poll.title}}</h2>
+
+    <div
+    v-for="(option, index) in poll.options" 
+    :key="index"  class="form-group">
+
+      <input type="radio" 
+      name="poll"
+      :value="option.id"
+      v-model="picked">
+
+      <label for="">{{option.text}}</label>
     </div>
+    <input type="submit">
+  </form>
 </template>
 
 <script>
+import Api from '../api';
+
+
 export default {
-    name: 'affichepoll',
-    // props: {
-    //     polls: {
-    //         type: Array,
-    //         required: true
-    //     }
-    // },
-    data: function () {
-        return { 
-            picked : null,
-            poll : {
-                title: "Que boire au petit dej ?",
-                options: [
-                        {id: 1, text: "Thé"},
-                        {id: 2, text: "Café"},
-                        {id: 3, text: "Jus d'orange"},
-                        {id: 4, text: "Rien, je suis en retard"},
-                    ]
-            }
-        }
-    },
-    methods: {
-        action2() {        
-            console.log(this.picked);
-        },
+  // on nomme notre component  
+  name:'answer',
+  // la fonction data retourne les données INTERNES de notre component, data DOIT être une fonction  
+  data(){
+    return {
+      // la données picked contiendra l'id de la réponse choisie
+      picked: null,
+      poll: {}
     }
+  },
+  // on déclare les méthodes du component  
+  methods:{
+    // la méthode onSubmit() est appelée lorsqu'on submit le formulaire    
+    onSubmit(){
+      Api.vote(this.picked);
+    }
+  },
+  beforeCreate(){
+    Api.getPollById(1).then((response) => {
+      this.poll = response.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
 }
 </script>
 
 <style>
-
 
 </style>

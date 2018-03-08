@@ -1,4 +1,4 @@
-# vue-ajax
+# promo5-vue-poll
 
 > A Vue.js project
 
